@@ -1,1 +1,9 @@
-Puzzle.css
+.Puzzle {
+	height: 150px;
+	border: 2px solid grey;
+}
+
+img {
+	height: 110px;
+	width: 200px;
+}

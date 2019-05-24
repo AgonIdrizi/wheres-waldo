@@ -1,1 +1,6 @@
-PuzzleList.css
+.PuzzleList {
+	margin-left: 200px;
+    margin-right: 200px;
+	display: grid;
+	grid-template-columns: 1fr 1fr
+}
