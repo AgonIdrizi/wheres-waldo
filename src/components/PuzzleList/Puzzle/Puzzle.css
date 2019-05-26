@@ -2,8 +2,12 @@
 	height: 150px;
 	border: 2px solid grey;
 }
+.PuzzleSelected {
+	height: 800px;
+	width: 800px;
+}
 
-img {
+.img {
 	height: 110px;
 	width: 200px;
 }

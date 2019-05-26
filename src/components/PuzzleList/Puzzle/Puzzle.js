@@ -5,9 +5,9 @@ const puzzle = (props) => {
 	
 	return(
 		<div 
-		className={classes.Puzzle}
+		className={props.selected ? null :classes.Puzzle}
 		onClick={props.clicked}>
-		  <img alt="puzzle" src={props.img} />
+		  <img className={props.selected ? classes.PuzzleSelected : classes.img} alt="puzzle" src={props.img} />
 		  <p>{props.title}</p>
 		</div>
 	)
