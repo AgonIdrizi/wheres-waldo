@@ -46,7 +46,13 @@ class PuzzleList extends Component {
   					{id: null, name: 'odlaw', imgUrl: odlaw}]}
   	],
   	selectedPuzzleId: null,
-  	divMenu: {x: null, y: null, display: false}
+  	divMenu: {x: null, y: null, display: false},
+  	gameScore: [
+  		{}
+  		],
+  	
+  	time: null
+  		
   }
 
   componentDidMount () {
@@ -74,7 +80,13 @@ class PuzzleList extends Component {
 
   selectedPuzzleHandler = (id) => {
   	console.log(id)
-  	this.setState({selectedPuzzleId: id})
+  	let gameScore = null
+  	gameScore = this.state.puzzles[id].characters.map(character => {
+  		console.log(character)
+  			return {id: character.id, name: character.name, found: false}
+  		})
+  	console.log(gameScore)
+  	this.setState({selectedPuzzleId: id, gameScore:  gameScore })
   }
 
   openDivMenuHandler = (event) => {
@@ -108,13 +120,18 @@ class PuzzleList extends Component {
 		 					  <CharacterList 
 		 					    characters={selectedPuzzle.characters} />
 		 					</React.Fragment>)
-		  					console.log(selectedPuzzle)
+		  					
 		  puzzleList=null
 		}
 	  return(
 	  	<div className={classes.PuzzleList}>
 	  	  {puzzleList}
-	  	  {this.state.divMenu.display ? <SelectPlayerMenu x={this.state.divMenu.x} y={this.state.divMenu.y} /> : null}
+	  	  {this.state.divMenu.display ? 
+	  	  				<SelectPlayerMenu 
+	  	  				x={this.state.divMenu.x} 
+	  	  				y={this.state.divMenu.y} 
+	  	  				characters={this.state.gameScore}/> :
+	  	  	 			null}
 	  	  {selectedPuzzleAndCharacters}
 	  	</div>
 		)

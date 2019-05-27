@@ -17,16 +17,16 @@ class App extends Component {
   }
 
   render () {
-    let puzzleList = null;
+    let display = null;
     if (this.state.name === ''){
-      puzzleList =<EnterName clicked={this.enterNameHandler} /> 
+      display =<EnterName clicked={this.enterNameHandler} /> 
     }else{
-      puzzleList = <PuzzleList />
+      display = <PuzzleList />
     }
     return (
       <div className={classes.App}>
         <p>Wheres Waldo</p>
-        {puzzleList}
+        {display}
       </div>
     );
   }

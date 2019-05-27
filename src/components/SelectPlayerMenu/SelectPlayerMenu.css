@@ -1,3 +1,20 @@
 .SelectPlayerMenu {
 	
 }
+
+.title {
+	text-align: center;
+	margin-top:0px;
+	font-size: 1rem;
+	margin-bottom:2px;
+}
+
+.SelectPlayerMenu p {
+	margin: 2px 2px;
+	background-color: white;
+	border: 1px solid red;
+}
+
+.SelectPlayerMenu p:hover {
+	background-color: red;
+}
