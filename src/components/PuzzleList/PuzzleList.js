@@ -89,6 +89,10 @@ class PuzzleList extends Component {
   	this.setState({selectedPuzzleId: id, gameScore:  gameScore })
   }
 
+  selectCharacterhandler = (characterId) => {
+  	console.log('State from selectCharacterHandler', this.state.divMenu)
+  }
+
   openDivMenuHandler = (event) => {
   	console.log(event.pageY, event.pageX)
   	this.setState({divMenu: {x: event.pageX, y: event.pageY, display: true}})
@@ -130,7 +134,8 @@ class PuzzleList extends Component {
 	  	  				<SelectPlayerMenu 
 	  	  				x={this.state.divMenu.x} 
 	  	  				y={this.state.divMenu.y} 
-	  	  				characters={this.state.gameScore}/> :
+	  	  				characters={this.state.gameScore}
+	  	  				clicked={this.selectCharacterHandler}/> :
 	  	  	 			null}
 	  	  {selectedPuzzleAndCharacters}
 	  	</div>
