@@ -3,8 +3,9 @@
 	border: 2px solid grey;
 }
 .PuzzleSelected {
-	height: 600px;
-	width: 800px;
+	height: 700px;
+	width: 946.266px;
+	display:block;
 }
 
 .img {

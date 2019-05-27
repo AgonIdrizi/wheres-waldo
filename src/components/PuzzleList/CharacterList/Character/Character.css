@@ -1,10 +1,10 @@
-.Player img {
+.Character img {
 	height: 110px;
 	width: 70px;
 	
 }
 
-.Player {
+.Character {
 	border-radius: 3px;
 	border: 2px solid red;
 	margin-bottom: 10px;

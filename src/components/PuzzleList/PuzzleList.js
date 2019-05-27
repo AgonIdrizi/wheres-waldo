@@ -1,7 +1,7 @@
 import React,{Component} from 'react'
 import classes from './PuzzleList.css'
 import Puzzle from './Puzzle/Puzzle'
-import PlayerList from './PlayerList/PlayerList'
+import CharacterList from './CharacterList/CharacterList'
 import SelectPlayerMenu from '../SelectPlayerMenu/SelectPlayerMenu'
 import easy from '../../assets/images/easy.jpg';
 import very_easy from '../../assets/images/very_easy.jpg';
@@ -18,17 +18,17 @@ class PuzzleList extends Component {
   state = {
   	puzzles : [
   	{id:1, title: 'very easy', imgUrl: very_easy , 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wenda', imgUrl: wenda}, {name: 'wizard', imgUrl: wizard}]},
+  		characters: [{name: 'waldo', imgUrl: waldo}, {name: 'wenda', imgUrl: wenda}, {name: 'wizard', imgUrl: wizard}]},
   	{id:2, title: 'easy', imgUrl: easy, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
+  		characters: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:3, title: 'normal', imgUrl:normal, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wenda', imgUrl: wenda}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
+  		characters: [{name: 'waldo', imgUrl: waldo}, {name: 'wenda', imgUrl: wenda}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:4, title: 'hard', imgUrl:hard, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
+  		characters: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:5, title: 'very hard', imgUrl:very_hard, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
+  		characters: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:6, title: 'insane', imgUrl:insane, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}]}
+  		characters: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}]}
   	],
   	selectedPuzzleId: null,
   	divMenu: {x: null, y: null, display: false}
@@ -49,7 +49,7 @@ class PuzzleList extends Component {
 
 	render() {
 		let selectedPuzzle = null;
-		let selectedPuzzleAndPlayers = null;
+		let selectedPuzzleAndCharacters = null;
 		let puzzleList = null
 		if (this.state.selectedPuzzleId == null) {
 			puzzleList = this.state.puzzles.map(elem => {
@@ -61,14 +61,14 @@ class PuzzleList extends Component {
 			})
 		} else {
 		  selectedPuzzle = this.state.puzzles[this.state.selectedPuzzleId ]
-		  selectedPuzzleAndPlayers = (<React.Fragment>
+		  selectedPuzzleAndCharacters = (<React.Fragment>
 		  					  <Puzzle 
 		  					    title={selectedPuzzle.title}
 		  						img={selectedPuzzle.imgUrl}
 		  						selected={true}
 		  						clicked ={this.openDivMenuHandler} />
-		 					  <PlayerList 
-		 					    players={selectedPuzzle.players} />
+		 					  <CharacterList 
+		 					    characters={selectedPuzzle.characters} />
 		 					</React.Fragment>)
 		  					console.log(selectedPuzzle)
 		  puzzleList=null
@@ -77,7 +77,7 @@ class PuzzleList extends Component {
 	  	<div className={classes.PuzzleList}>
 	  	  {puzzleList}
 	  	  {this.state.divMenu.display ? <SelectPlayerMenu x={this.state.divMenu.x} y={this.state.divMenu.y} /> : null}
-	  	  {selectedPuzzleAndPlayers}
+	  	  {selectedPuzzleAndCharacters}
 	  	</div>
 		)
 	}
