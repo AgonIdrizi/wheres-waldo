@@ -18,17 +18,17 @@ class PuzzleList extends Component {
   state = {
   	puzzles : [
   	{id:1, title: 'very easy', imgUrl: very_easy , 
-  		players: [{name: 'waldo', imgUrl: waldo, found: false}, {name: 'wenda', imgUrl: wenda, found: false}, {name: 'wizard', imgUrl: wizard, found: false}]},
+  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wenda', imgUrl: wenda}, {name: 'wizard', imgUrl: wizard}]},
   	{id:2, title: 'easy', imgUrl: easy, 
-  		players: [{name: 'waldo', imgUrl: waldo, found: false}, {name: 'wizard', imgUrl: wizard, found: false}, {name: 'odlaw', imgUrl: odlaw, found: false}]},
+  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:3, title: 'normal', imgUrl:normal, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wenda', imgUrl: wenda, found: false}, {name: 'wizard', imgUrl: wizard, found: false}, {name: 'odlaw', imgUrl: odlaw, found: false}]},
+  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wenda', imgUrl: wenda}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:4, title: 'hard', imgUrl:hard, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard, found: false}, {name: 'wizard', imgUrl: wizard, found: false}, {name: 'odlaw', imgUrl: odlaw, found: false}]},
+  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:5, title: 'very hard', imgUrl:very_hard, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard, found: false}, {name: 'wizard', imgUrl: wizard, found: false}, {name: 'odlaw', imgUrl: odlaw, found: false}]},
+  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}, {name: 'wizard', imgUrl: wizard}, {name: 'odlaw', imgUrl: odlaw}]},
   	{id:6, title: 'insane', imgUrl:insane, 
-  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard, found: false}]}
+  		players: [{name: 'waldo', imgUrl: waldo}, {name: 'wizard', imgUrl: wizard}]}
   	],
   	selectedPuzzleId: null,
   	divMenu: {x: null, y: null, display: false}
@@ -40,16 +40,16 @@ class PuzzleList extends Component {
   }
 
   openDivMenuHandler = (event) => {
-  	
-  	this.setState({divMenu: {x: event.clientX, y: event.clientY, display: true}})
-  	console.log(event.clientX)
+  	console.log(event.pageY, event.pageX)
+  	this.setState({divMenu: {x: event.pageX, y: event.pageY, display: true}})
+  	console.log(event.clientY, event.clientX)
 
 	
   }
 
 	render() {
-		let selectedPuzzleId = null;
 		let selectedPuzzle = null;
+		let selectedPuzzleAndPlayers = null;
 		let puzzleList = null
 		if (this.state.selectedPuzzleId == null) {
 			puzzleList = this.state.puzzles.map(elem => {
@@ -60,24 +60,24 @@ class PuzzleList extends Component {
 					clicked={(event) =>this.selectedPuzzleHandler(elem.id - 1)}/>
 			})
 		} else {
-		  selectedPuzzleId = this.state.puzzles[this.state.selectedPuzzleId ]
-		  selectedPuzzle = (<React.Fragment>
+		  selectedPuzzle = this.state.puzzles[this.state.selectedPuzzleId ]
+		  selectedPuzzleAndPlayers = (<React.Fragment>
 		  					  <Puzzle 
-		  					    title={selectedPuzzleId.title}
-		  						img={selectedPuzzleId.imgUrl}
+		  					    title={selectedPuzzle.title}
+		  						img={selectedPuzzle.imgUrl}
 		  						selected={true}
 		  						clicked ={this.openDivMenuHandler} />
 		 					  <PlayerList 
-		 					    players={selectedPuzzleId.players} />
+		 					    players={selectedPuzzle.players} />
 		 					</React.Fragment>)
-		  					console.log(selectedPuzzleId)
+		  					console.log(selectedPuzzle)
 		  puzzleList=null
 		}
 	  return(
 	  	<div className={classes.PuzzleList}>
 	  	  {puzzleList}
 	  	  {this.state.divMenu.display ? <SelectPlayerMenu x={this.state.divMenu.x} y={this.state.divMenu.y} /> : null}
-	  	  {selectedPuzzle}
+	  	  {selectedPuzzleAndPlayers}
 	  	</div>
 		)
 	}
