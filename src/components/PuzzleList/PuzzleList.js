@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import classes from './PuzzleList.css'
 import Puzzle from './Puzzle/Puzzle'
 import CharacterList from './CharacterList/CharacterList'
+import EndGameModal from '../EndGameModal/EndGameModal'
 import SelectPlayerMenu from '../SelectCharacterMenu/SelectCharacterMenu'
 import easy from '../../assets/images/easy.jpg';
 import very_easy from '../../assets/images/very_easy.jpg';
@@ -33,24 +34,24 @@ class PuzzleList extends Component {
 	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
 	  	{id:4, title: 'hard', imgUrl:hard, 
 	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-	  					{id: null, name: 'wenda', imgUrl: wizard}, 
+	  					{id: null, name: 'wenda', imgUrl: wenda}, 
 	  					{id: null, name: 'wizard', imgUrl: wizard}, 
 	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
 	  	{id:5, title: 'very hard', imgUrl:very_hard, 
 	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-	  					{id: null, name: 'wenda', imgUrl: wizard}, 
+	  					{id: null, name: 'wenda', imgUrl: wenda}, 
 	  					{id: null, name: 'wizard', imgUrl: wizard}, 
 	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
 	  	{id:6, title: 'insane', imgUrl:insane, 
 	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-	  					{id: null, name: 'wenda', imgUrl: wizard}, 
+	  					{id: null, name: 'wenda', imgUrl: wenda}, 
 	  					{id: null, name: 'wizard', imgUrl: wizard}, 
 	  					{id: null, name: 'odlaw', imgUrl: odlaw}]}
 	  	],
   		selectedPuzzleId: null,
   		divMenu: {x: null, y: null, display: false},
   		gameScore: [
-  			{id: 0, name:'waldo', found:'false'}
+  			{}
   		],
   	
   		startTime: null,
@@ -85,10 +86,10 @@ class PuzzleList extends Component {
   
 
   selectedPuzzleHandler =(id)   =>{
-  	console.log(id)
+  	
   	let gameScore
   	gameScore = this.state.puzzles[id].characters.map(character => {
-  		console.log(character)
+  		
   			return {id: character.id, name: character.name, found: false}
   		})
   	console.log(gameScore)
@@ -133,7 +134,9 @@ class PuzzleList extends Component {
 		  						selected={true}
 		  						clicked ={this.openDivMenuHandler} />
 		 					  <CharacterList 
-		 					    characters={selectedPuzzle.characters} />
+		 					    characters={selectedPuzzle.characters}
+		 					    gameScore={this.state.gameScore}
+		 					    />
 		 					</React.Fragment>)
 		  if (this.state.divMenu.display) {
 	  	  	  divMenu = <SelectPlayerMenu 
@@ -148,6 +151,7 @@ class PuzzleList extends Component {
 		  puzzleList=null
 		  if(this.state.gameOver) {
 		  	endGameModal = <EndGameModal />
+		  	selectedPuzzleAndCharacters=null
 		  }
 		}
 
@@ -155,6 +159,7 @@ class PuzzleList extends Component {
 	  	<div className={classes.PuzzleList}>
 	  	  {puzzleList }
 	  	  {divMenu}
+	  	  {endGameModal}
 	  	  {selectedPuzzleAndCharacters}
 	  	</div>
 		)
