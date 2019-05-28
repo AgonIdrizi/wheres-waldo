@@ -2,7 +2,7 @@ import React,{Component} from 'react'
 import classes from './PuzzleList.css'
 import Puzzle from './Puzzle/Puzzle'
 import CharacterList from './CharacterList/CharacterList'
-import SelectPlayerMenu from '../SelectPlayerMenu/SelectPlayerMenu'
+import SelectPlayerMenu from '../SelectCharacterMenu/SelectCharacterMenu'
 import easy from '../../assets/images/easy.jpg';
 import very_easy from '../../assets/images/very_easy.jpg';
 import normal from '../../assets/images/normal.jpg';
@@ -15,49 +15,55 @@ import wenda from '../../assets/images/wenda.jpg';
 import waldo from '../../assets/images/waldo.jpg';
 import axios from 'axios'
 class PuzzleList extends Component {
-  state = {
+  constructor(props) {
+  	super();
+  	this.state = {
   	puzzles : [
-  	{id:1, title: 'very easy', imgUrl: very_easy , 
-  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-  					{id: null, name: 'wenda', imgUrl: wenda}, 
-  					{id: null, name: 'wizard', imgUrl: wizard}]},
-  	{id:2, title: 'easy', imgUrl: easy, 
-  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-  					{id: null, name: 'wizard', imgUrl: wizard}, 
-  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
-  	{id:3, title: 'normal', imgUrl:normal, 
-  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-  					{id: null, name: 'wizard', imgUrl: wizard}, 
-  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
-  	{id:4, title: 'hard', imgUrl:hard, 
-  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-  					{id: null, name: 'wenda', imgUrl: wizard}, 
-  					{id: null, name: 'wizard', imgUrl: wizard}, 
-  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
-  	{id:5, title: 'very hard', imgUrl:very_hard, 
-  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-  					{id: null, name: 'wenda', imgUrl: wizard}, 
-  					{id: null, name: 'wizard', imgUrl: wizard}, 
-  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
-  	{id:6, title: 'insane', imgUrl:insane, 
-  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-  					{id: null, name: 'wenda', imgUrl: wizard}, 
-  					{id: null, name: 'wizard', imgUrl: wizard}, 
-  					{id: null, name: 'odlaw', imgUrl: odlaw}]}
-  	],
-  	selectedPuzzleId: null,
-  	divMenu: {x: null, y: null, display: false},
-  	gameScore: [
-  		{}
+	  	{id:1, title: 'very easy', imgUrl: very_easy , 
+	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
+	  					{id: null, name: 'wenda', imgUrl: wenda}, 
+	  					{id: null, name: 'wizard', imgUrl: wizard}]},
+	  	{id:2, title: 'easy', imgUrl: easy, 
+	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
+	  					{id: null, name: 'wizard', imgUrl: wizard}, 
+	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
+	  	{id:3, title: 'normal', imgUrl:normal, 
+	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
+	  					{id: null, name: 'wizard', imgUrl: wizard}, 
+	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
+	  	{id:4, title: 'hard', imgUrl:hard, 
+	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
+	  					{id: null, name: 'wenda', imgUrl: wizard}, 
+	  					{id: null, name: 'wizard', imgUrl: wizard}, 
+	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
+	  	{id:5, title: 'very hard', imgUrl:very_hard, 
+	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
+	  					{id: null, name: 'wenda', imgUrl: wizard}, 
+	  					{id: null, name: 'wizard', imgUrl: wizard}, 
+	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
+	  	{id:6, title: 'insane', imgUrl:insane, 
+	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
+	  					{id: null, name: 'wenda', imgUrl: wizard}, 
+	  					{id: null, name: 'wizard', imgUrl: wizard}, 
+	  					{id: null, name: 'odlaw', imgUrl: odlaw}]}
+	  	],
+  		selectedPuzzleId: null,
+  		divMenu: {x: null, y: null, display: false},
+  		gameScore: [
+  			{id: 0, name:'waldo', found:'false'}
   		],
   	
-  	time: null
-  		
+  		startTime: null,
+  		gameOver: false
+  	}
+  	this.selectCharacterHandler = this.selectCharacterHandler.bind(this)	
   }
+  
+  
 
   componentDidMount () {
   	let headers = {'Access-Control-Allow-Origin': "*"}
-		axios.get('https://03150ea3.ngrok.io/puzzles.json', {headers: headers})
+		axios.get('https://f0f49ed6.ngrok.io/puzzles.json', {headers: headers})
 		.then(response => {
 			let puzzles = [...this.state.puzzles]
 			
@@ -78,9 +84,9 @@ class PuzzleList extends Component {
 
   
 
-  selectedPuzzleHandler = (id) => {
+  selectedPuzzleHandler =(id)   =>{
   	console.log(id)
-  	let gameScore = null
+  	let gameScore
   	gameScore = this.state.puzzles[id].characters.map(character => {
   		console.log(character)
   			return {id: character.id, name: character.name, found: false}
@@ -89,8 +95,11 @@ class PuzzleList extends Component {
   	this.setState({selectedPuzzleId: id, gameScore:  gameScore })
   }
 
-  selectCharacterhandler = (characterId) => {
-  	console.log('State from selectCharacterHandler', this.state.divMenu)
+  selectCharacterHandler  (id)  {
+  	console.log('SelectCharacterhandler fired', id, this.state.divMenu.x, this.state.divMenu.y)
+  	if (this.state.gameOver) {
+
+  	}
   }
 
   openDivMenuHandler = (event) => {
@@ -105,6 +114,8 @@ class PuzzleList extends Component {
 		let selectedPuzzle = null;
 		let selectedPuzzleAndCharacters = null;
 		let puzzleList = null
+		let divMenu = null
+		let endGameModal = null
 		if (this.state.selectedPuzzleId == null) {
 			puzzleList = this.state.puzzles.map(elem => {
 			return <Puzzle
@@ -124,19 +135,26 @@ class PuzzleList extends Component {
 		 					  <CharacterList 
 		 					    characters={selectedPuzzle.characters} />
 		 					</React.Fragment>)
-		  					
+		  if (this.state.divMenu.display) {
+	  	  	  divMenu = <SelectPlayerMenu 
+	  	  				  x={this.state.divMenu.x} 
+	  	  				  y={this.state.divMenu.y} 
+	  	  				  pclicked={this.selectCharacterHandler}
+	  	  				 characters={this.state.gameScore}
+	  	  				 >
+	  	  				 </SelectPlayerMenu>
+	  	  						
+	  	  }					
 		  puzzleList=null
+		  if(this.state.gameOver) {
+		  	endGameModal = <EndGameModal />
+		  }
 		}
+
 	  return(
 	  	<div className={classes.PuzzleList}>
-	  	  {puzzleList}
-	  	  {this.state.divMenu.display ? 
-	  	  				<SelectPlayerMenu 
-	  	  				x={this.state.divMenu.x} 
-	  	  				y={this.state.divMenu.y} 
-	  	  				characters={this.state.gameScore}
-	  	  				clicked={this.selectCharacterHandler}/> :
-	  	  	 			null}
+	  	  {puzzleList }
+	  	  {divMenu}
 	  	  {selectedPuzzleAndCharacters}
 	  	</div>
 		)

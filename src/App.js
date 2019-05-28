@@ -21,7 +21,7 @@ class App extends Component {
     if (this.state.name === ''){
       display =<EnterName clicked={this.enterNameHandler} /> 
     }else{
-      display = <PuzzleList />
+      display = <PuzzleList playerName={this.state.name} />
     }
     return (
       <div className={classes.App}>
