@@ -94,12 +94,15 @@ class PuzzleList extends Component {
   		})
   	console.log(gameScore)
   	this.setState({selectedPuzzleId: id, gameScore:  gameScore })
+  	start new score session with backend to keep track of time and name
   }
 
   selectCharacterHandler  (id)  {
   	console.log('SelectCharacterhandler fired', id, this.state.divMenu.x, this.state.divMenu.y)
-  	if (this.state.gameOver) {
-
+  	check with backend if positon correct
+  	if correct update gameScore state
+  	if (all characters  gameScore are found){
+  		update gameOver state
   	}
   }
 
