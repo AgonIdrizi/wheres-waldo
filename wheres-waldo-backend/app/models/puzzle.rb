@@ -27,9 +27,9 @@ class Puzzle < ApplicationRecord
                     character.top_left_y.to_i + character.height.to_i) )
       { name: character.name, x: character.top_left_x, 
         y: character.top_left_y, width: character.width, 
-        height: character.height }
+        height: character.height, found: true }
     else
-      false
+      {found: false}
     end
   end
 end

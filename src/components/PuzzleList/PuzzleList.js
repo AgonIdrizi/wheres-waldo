@@ -94,16 +94,29 @@ class PuzzleList extends Component {
   		})
   	console.log(gameScore)
   	this.setState({selectedPuzzleId: id, gameScore:  gameScore })
-  	start new score session with backend to keep track of time and name
+  	//start new score session with backend to keep track of time and name
   }
 
   selectCharacterHandler  (id)  {
   	console.log('SelectCharacterhandler fired', id, this.state.divMenu.x, this.state.divMenu.y)
-  	check with backend if positon correct
-  	if correct update gameScore state
-  	if (all characters  gameScore are found){
-  		update gameOver state
-  	}
+  	//check with backend if positon correct
+  	//if correct update gameScore state
+  	//if (all characters  gameScore are found){
+  	//	update gameOver state
+
+  	let headers = {'Access-Control-Allow-Origin': "*"}
+  	let params = {id:1}
+		axios.get('https://f0f49ed6.ngrok.io/puzzle-character-location/1', {headers: headers, params: params})
+		.then(response => {
+			
+			console.log(response.data)
+			
+			
+		})
+		.catch(error => {
+			console.log(error)
+		});
+  	
   }
 
   openDivMenuHandler = (event) => {
