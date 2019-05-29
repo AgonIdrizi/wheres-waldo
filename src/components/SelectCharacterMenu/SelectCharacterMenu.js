@@ -13,13 +13,14 @@ const selectCharacterMenu = (props) => {
 	}
 
 	
-	const charactersName = props.characters.map(character => (
-		
-		<p onClick={() => props.pclicked(character.id)} key={character.id} data = {character.found}>{character.name}</p>))
-		
+	const charactersName = props.characters.map(character => {
+		if (character.found == false) {
+		   return (<p onClick={() => props.pclicked(character.id, character.name)} key={character.id} >{character.name}</p>)
+		}
+		})
 	return (<div className={classes.SelectCharacterMenu} style={style}>
 			  <h4 className={classes.title}>Who you found?</h4>
-			  {console.log(props)}
+			  
 			  {charactersName}
 			</div>)
 }

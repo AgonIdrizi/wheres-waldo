@@ -3,7 +3,7 @@ import classes from './PuzzleList.css'
 import Puzzle from './Puzzle/Puzzle'
 import CharacterList from './CharacterList/CharacterList'
 import EndGameModal from '../EndGameModal/EndGameModal'
-import SelectPlayerMenu from '../SelectCharacterMenu/SelectCharacterMenu'
+import SelectCharacterMenu from '../SelectCharacterMenu/SelectCharacterMenu'
 import easy from '../../assets/images/easy.jpg';
 import very_easy from '../../assets/images/very_easy.jpg';
 import normal from '../../assets/images/normal.jpg';
@@ -64,7 +64,7 @@ class PuzzleList extends Component {
 
   componentDidMount () {
   	let headers = {'Access-Control-Allow-Origin': "*"}
-		axios.get('https://f0f49ed6.ngrok.io/puzzles.json', {headers: headers})
+		axios.get('https://a7fb500a.ngrok.io/puzzles.json', {headers: headers})
 		.then(response => {
 			let puzzles = [...this.state.puzzles]
 			
@@ -72,6 +72,7 @@ class PuzzleList extends Component {
 			  puzzles[index].id = obj.puzzle.id
 			  puzzles[index].title= obj.puzzle.title
 			  puzzles[index].characters = obj.characters.map((character,i) => {
+			  	console.log(character)
 			  	return {id: obj.characters[i].id, name: obj.characters[i].name, imgUrl: puzzles[index].characters[i].imgUrl}
 			  })
 			})
@@ -92,37 +93,55 @@ class PuzzleList extends Component {
   		
   			return {id: character.id, name: character.name, found: false}
   		})
-  	console.log(gameScore)
-  	this.setState({selectedPuzzleId: id, gameScore:  gameScore })
+  	
+  	this.setState({selectedPuzzleId: id , gameScore:  gameScore })
   	//start new score session with backend to keep track of time and name
   }
 
-  selectCharacterHandler  (id)  {
-  	console.log('SelectCharacterhandler fired', id, this.state.divMenu.x, this.state.divMenu.y)
+  selectCharacterHandler  (id, name)  {
+  	console.log('SelectCharacterhandler fired')
   	//check with backend if positon correct
   	//if correct update gameScore state
   	//if (all characters  gameScore are found){
   	//	update gameOver state
 
   	let headers = {'Access-Control-Allow-Origin': "*"}
-  	let params = {id:1}
-		axios.get('https://f0f49ed6.ngrok.io/puzzle-character-location/1', {headers: headers, params: params})
+  	let params = {x: this.state.divMenu.x, y:this.state.divMenu.y , name: name}
+		axios.get('https://a7fb500a.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
 		.then(response => {
+			//console.log(this.state.selectedPuzzleId)
+			if (response.data.status == 'OK'){
+			  console.log(response.data)
+			  if (response.data.message.found === true) {
+			  	let newGameScore = [...this.state.gameScore]
+			  	  newGameScore.map(character => {
+			  	  	if (character.id == response.data.message.id ){
+			  	  		character.found = 'true'
+			  	  	}
+
+			  	  })
+			  	  this.setState({gameScore: newGameScore})
+
+			  }
+			}
 			
-			console.log(response.data)
 			
-			
+			//if all characters are found set gameOver to true
 		})
 		.catch(error => {
 			console.log(error)
 		});
+
+		if (this.state.gameOver) {
+
+		}
   	
   }
 
   openDivMenuHandler = (event) => {
-  	console.log(event.pageY, event.pageX)
+  	console.log(event.pageX, event.pageY)
   	this.setState({divMenu: {x: event.pageX, y: event.pageY, display: true}})
-  	console.log(event.clientY, event.clientX)
+  	//console.log(event.clientY, event.clientX)
 
 	
   }
@@ -139,7 +158,7 @@ class PuzzleList extends Component {
 					key={elem.id - 1} 
 					title={elem.title}
 					img={elem.imgUrl}
-					clicked={(event) =>this.selectedPuzzleHandler(elem.id - 1)}/>
+					clicked={(event) =>this.selectedPuzzleHandler(elem.id -1 )}/>
 			})
 		} else {
 		  selectedPuzzle = this.state.puzzles[this.state.selectedPuzzleId ]
@@ -155,13 +174,13 @@ class PuzzleList extends Component {
 		 					    />
 		 					</React.Fragment>)
 		  if (this.state.divMenu.display) {
-	  	  	  divMenu = <SelectPlayerMenu 
+	  	  	  divMenu = <SelectCharacterMenu 
 	  	  				  x={this.state.divMenu.x} 
 	  	  				  y={this.state.divMenu.y} 
 	  	  				  pclicked={this.selectCharacterHandler}
 	  	  				 characters={this.state.gameScore}
 	  	  				 >
-	  	  				 </SelectPlayerMenu>
+	  	  				 </SelectCharacterMenu>
 	  	  						
 	  	  }					
 		  puzzleList=null

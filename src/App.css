@@ -2,4 +2,8 @@
   text-align: center;
   grid-template-areas: 'h h h'
 }
+.App p {
+	margin: 0px 0px;
+	height: 19px;
+}
 

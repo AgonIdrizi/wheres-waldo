@@ -2,7 +2,7 @@ import React from 'react'
 import classes from './Character.css'
 
 const Character = (props) => {
-	const found = !props.found ? (<h3>FOUND</h3>) : null
+	const found = props.found ? (<h3>FOUND</h3>) : null
 	return (<div className={classes.Character}>
 			  {found}
 			  <img alt={props.name} src={props.url} />
