@@ -1,9 +1,11 @@
 import React,{Component} from 'react'
 import classes from './PuzzleList.css'
+import EnterName from '../EnterName/EnterName'
 import Puzzle from './Puzzle/Puzzle'
 import CharacterList from './CharacterList/CharacterList'
 import EndGameModal from '../EndGameModal/EndGameModal'
 import SelectCharacterMenu from '../SelectCharacterMenu/SelectCharacterMenu'
+import FoundCharacterDiv from './FoundCharacterDiv/FoundCharacterDiv'
 import easy from '../../assets/images/easy.jpg';
 import very_easy from '../../assets/images/very_easy.jpg';
 import normal from '../../assets/images/normal.jpg';
@@ -30,8 +32,8 @@ class PuzzleList extends Component {
 	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
 	  	{id:3, title: 'normal', imgUrl:normal, 
 	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
-	  					{id: null, name: 'wizard', imgUrl: wizard}, 
-	  					{id: null, name: 'odlaw', imgUrl: odlaw}]},
+	  					{id: null, name: 'wenda', imgUrl: wenda}, 
+	  					{id: null, name: 'wizard', imgUrl: wizard}]},
 	  	{id:4, title: 'hard', imgUrl:hard, 
 	  		characters: [{id: null, name: 'waldo', imgUrl: waldo}, 
 	  					{id: null, name: 'wenda', imgUrl: wenda}, 
@@ -48,12 +50,16 @@ class PuzzleList extends Component {
 	  					{id: null, name: 'wizard', imgUrl: wizard}, 
 	  					{id: null, name: 'odlaw', imgUrl: odlaw}]}
 	  	],
+	  	playerName: 'a',
   		selectedPuzzleId: null,
   		divMenu: {x: null, y: null, display: false},
   		gameScore: [
   			{}
   		],
-  	
+  		divFoundCharacters: [
+  			//{x_top_left: 808, y_top_left: 651, width}
+  		],
+  		charactersLeftToFind: null,
   		startTime: null,
   		gameOver: false
   	}
@@ -64,7 +70,7 @@ class PuzzleList extends Component {
 
   componentDidMount () {
   	let headers = {'Access-Control-Allow-Origin': "*"}
-		axios.get('https://a7fb500a.ngrok.io/puzzles.json', {headers: headers})
+		axios.get('https://f01282fe.ngrok.io/puzzles.json', {headers: headers})
 		.then(response => {
 			let puzzles = [...this.state.puzzles]
 			
@@ -72,7 +78,7 @@ class PuzzleList extends Component {
 			  puzzles[index].id = obj.puzzle.id
 			  puzzles[index].title= obj.puzzle.title
 			  puzzles[index].characters = obj.characters.map((character,i) => {
-			  	console.log(character)
+			  	
 			  	return {id: obj.characters[i].id, name: obj.characters[i].name, imgUrl: puzzles[index].characters[i].imgUrl}
 			  })
 			})
@@ -91,10 +97,10 @@ class PuzzleList extends Component {
   	let gameScore
   	gameScore = this.state.puzzles[id].characters.map(character => {
   		
-  			return {id: character.id, name: character.name, found: false}
+  			return {id: character.id, name: character.name, imgUrl: character.imgUrl, found: false}
   		})
   	
-  	this.setState({selectedPuzzleId: id , gameScore:  gameScore })
+  	this.setState({selectedPuzzleId: id , gameScore:  gameScore , charactersLeftToFind: gameScore.length})
   	//start new score session with backend to keep track of time and name
   }
 
@@ -107,35 +113,50 @@ class PuzzleList extends Component {
 
   	let headers = {'Access-Control-Allow-Origin': "*"}
   	let params = {x: this.state.divMenu.x, y:this.state.divMenu.y , name: name}
-		axios.get('https://a7fb500a.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
+		axios.get('https://f01282fe.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
 		.then(response => {
 			//console.log(this.state.selectedPuzzleId)
 			if (response.data.status == 'OK'){
 			  console.log(response.data)
 			  if (response.data.message.found === true) {
+			  	let divFoundCharacters = [...this.state.divFoundCharacters, {x_top_left: response.data.message.x, y_top_left: response.data.message.y, width:response.data.message.width, height: response.data.message.height}]
 			  	let newGameScore = [...this.state.gameScore]
+			  	console.log('newGameScore',newGameScore, response.data)
 			  	  newGameScore.map(character => {
 			  	  	if (character.id == response.data.message.id ){
 			  	  		character.found = 'true'
+
 			  	  	}
 
 			  	  })
-			  	  this.setState({gameScore: newGameScore})
+
+			  	  this.setState({gameScore: newGameScore,divFoundCharacters: divFoundCharacters, charactersLeftToFind: this.state.charactersLeftToFind -1})
 
 			  }
 			}
 			
 			
 			//if all characters are found set gameOver to true
+			if(this.state.charactersLeftToFind == 0) {
+				this.setState({gameOver: true, divMenu:{display: false}})
+			}
 		})
 		.catch(error => {
 			console.log(error)
 		});
 
-		if (this.state.gameOver) {
-
-		}
   	
+  }
+
+  enterNameHandler = (value) => {
+    console.log(value)
+    if (value == '')
+      value = 'Guest'
+    this.setState({playerName: value})
+  }
+
+  newGameHandler = ()=> {
+  	//set playername null
   }
 
   openDivMenuHandler = (event) => {
@@ -149,9 +170,15 @@ class PuzzleList extends Component {
 	render() {
 		let selectedPuzzle = null;
 		let selectedPuzzleAndCharacters = null;
-		let puzzleList = null
-		let divMenu = null
-		let endGameModal = null
+		let puzzleList = null;
+		let divSelectCharacterMenu = null;
+		let divFoundCharacters = null;
+		let endGameModal = null;
+		let enterName = null;
+		if( this.state.playerName === 'a') {
+		  	return enterName = <EnterName clicked={this.enterNameHandler} />
+		  	
+		  }
 		if (this.state.selectedPuzzleId == null) {
 			puzzleList = this.state.puzzles.map(elem => {
 			return <Puzzle
@@ -169,12 +196,11 @@ class PuzzleList extends Component {
 		  						selected={true}
 		  						clicked ={this.openDivMenuHandler} />
 		 					  <CharacterList 
-		 					    characters={selectedPuzzle.characters}
 		 					    gameScore={this.state.gameScore}
 		 					    />
 		 					</React.Fragment>)
-		  if (this.state.divMenu.display) {
-	  	  	  divMenu = <SelectCharacterMenu 
+		    if (this.state.divMenu.display) {
+	  	  	   divSelectCharacterMenu = <SelectCharacterMenu 
 	  	  				  x={this.state.divMenu.x} 
 	  	  				  y={this.state.divMenu.y} 
 	  	  				  pclicked={this.selectCharacterHandler}
@@ -182,20 +208,34 @@ class PuzzleList extends Component {
 	  	  				 >
 	  	  				 </SelectCharacterMenu>
 	  	  						
-	  	  }					
-		  puzzleList=null
+	  	    }					
+		    if (this.state.divFoundCharacters.length> 0) {
+		  	  divFoundCharacters = this.state.divFoundCharacters.map(character =>{
+		  		return <FoundCharacterDiv 
+		  				  x = {character.x_top_left}
+		  				  y = {character.y_top_left}
+		  				  width={character.width}
+		  				  height={character.height}/>
+		  	  })
+		  	
+		  }
+
+		  
 		  if(this.state.gameOver) {
 		  	endGameModal = <EndGameModal />
 		  	selectedPuzzleAndCharacters=null
+		  	divFoundCharacters=null
 		  }
 		}
 
 	  return(
 	  	<div className={classes.PuzzleList}>
+	  	  {enterName}
 	  	  {puzzleList }
-	  	  {divMenu}
+	  	  {divSelectCharacterMenu}
 	  	  {endGameModal}
 	  	  {selectedPuzzleAndCharacters}
+	  	  {divFoundCharacters}
 	  	</div>
 		)
 	}
