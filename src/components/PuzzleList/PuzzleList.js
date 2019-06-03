@@ -70,7 +70,7 @@ class PuzzleList extends Component {
 
   componentDidMount () {
   	let headers = {'Access-Control-Allow-Origin': "*"}
-		axios.get('https://f01282fe.ngrok.io/puzzles.json', {headers: headers})
+		axios.get('https://a38f8932.ngrok.io/puzzles.json', {headers: headers})
 		.then(response => {
 			let puzzles = [...this.state.puzzles]
 			
@@ -113,7 +113,7 @@ class PuzzleList extends Component {
 
   	let headers = {'Access-Control-Allow-Origin': "*"}
   	let params = {x: this.state.divMenu.x, y:this.state.divMenu.y , name: name}
-		axios.get('https://f01282fe.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
+		axios.get('https://a38f8932.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
 		.then(response => {
 			//console.log(this.state.selectedPuzzleId)
 			if (response.data.status == 'OK'){
@@ -150,9 +150,16 @@ class PuzzleList extends Component {
 
   enterNameHandler = (value) => {
     console.log(value)
-    if (value == '')
-      value = 'Guest'
-    this.setState({playerName: value})
+    let headers = {'Access-Control-Allow-Origin': "*"}
+    let params = {name: value}
+    axios.post('https://a38f8932.ngrok.io/players.json',{headers: headers, name: value})
+    	.then(response => {
+    		console.log(response.data)
+    	})
+    	.catch(error => {
+    		console.log(error)
+    	})
+    this.setState({playerName: 'agon'})
   }
 
   newGameHandler = ()=> {

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_28_191112) do
+ActiveRecord::Schema.define(version: 2019_06_03_134547) do
 
   create_table "characters", force: :cascade do |t|
     t.string "name"
@@ -25,11 +25,9 @@ ActiveRecord::Schema.define(version: 2019_05_28_191112) do
   end
 
   create_table "players", force: :cascade do |t|
-    t.integer "puzzle_id"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["puzzle_id"], name: "index_players_on_puzzle_id"
   end
 
   create_table "puzzles", force: :cascade do |t|
