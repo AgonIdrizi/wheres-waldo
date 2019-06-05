@@ -4,6 +4,6 @@ Rails.application.routes.draw do
   get 'players/create'
   resources :puzzles , only: [:index]
   resources :players , only: [:create]
-  resources :scores , only: [:create, :index]
+  resources :scores , only: [:create, :index, :update]
   get "puzzle-character-locations/:id", to: "puzzles#find_puzzle_character_location"
 end

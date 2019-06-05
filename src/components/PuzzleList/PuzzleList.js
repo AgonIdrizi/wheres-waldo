@@ -50,8 +50,9 @@ class PuzzleList extends Component {
 	  					{id: null, name: 'wizard', imgUrl: wizard}, 
 	  					{id: null, name: 'odlaw', imgUrl: odlaw}]}
 	  	],
-	  	playerName: 'a',
+	  	player: {id: null,name: ''},
   		selectedPuzzleId: null,
+  		currentScoreId: null,
   		divMenu: {x: null, y: null, display: false},
   		gameScore: [
   			{}
@@ -70,7 +71,7 @@ class PuzzleList extends Component {
 
   componentDidMount () {
   	let headers = {'Access-Control-Allow-Origin': "*"}
-		axios.get('https://a38f8932.ngrok.io/puzzles.json', {headers: headers})
+		axios.get('https://e7223ff9.ngrok.io/puzzles.json', {headers: headers})
 		.then(response => {
 			let puzzles = [...this.state.puzzles]
 			
@@ -94,14 +95,15 @@ class PuzzleList extends Component {
 
   selectedPuzzleHandler =(id)   =>{
   	
-  	let gameScore
-  	gameScore = this.state.puzzles[id].characters.map(character => {
-  		
+  	
+  	let gameScore = this.state.puzzles[id].characters.map(character => {
+  		console.log('cahracter', character)
   			return {id: character.id, name: character.name, imgUrl: character.imgUrl, found: false}
   		})
-  	
+  	console.log('gameScore',gameScore)
   	this.setState({selectedPuzzleId: id , gameScore:  gameScore , charactersLeftToFind: gameScore.length})
   	//start new score session with backend to keep track of time and name
+  	this.setStartTimeHandler()
   }
 
   selectCharacterHandler  (id, name)  {
@@ -113,7 +115,7 @@ class PuzzleList extends Component {
 
   	let headers = {'Access-Control-Allow-Origin': "*"}
   	let params = {x: this.state.divMenu.x, y:this.state.divMenu.y , name: name}
-		axios.get('https://a38f8932.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
+		axios.get('https://e7223ff9.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
 		.then(response => {
 			//console.log(this.state.selectedPuzzleId)
 			if (response.data.status == 'OK'){
@@ -138,6 +140,7 @@ class PuzzleList extends Component {
 			
 			//if all characters are found set gameOver to true
 			if(this.state.charactersLeftToFind == 0) {
+				this.updateFinishTimeHandler()
 				this.setState({gameOver: true, divMenu:{display: false}})
 			}
 		})
@@ -152,14 +155,41 @@ class PuzzleList extends Component {
     console.log(value)
     let headers = {'Access-Control-Allow-Origin': "*"}
     let params = {name: value}
-    axios.post('https://a38f8932.ngrok.io/players.json',{headers: headers, name: value})
+    axios.post('https://e7223ff9.ngrok.io/players.json',{headers: headers, name: value})
     	.then(response => {
     		console.log(response.data)
+    		this.setState({player: {id: response.data.id,  name: response.data.name}})
     	})
     	.catch(error => {
     		console.log(error)
     	})
-    this.setState({playerName: 'agon'})
+    
+  }
+
+  setStartTimeHandler = () => {
+  	//post to Scores create with params player_id, puzzle_id
+  	let headers = {'Access-Control-Allow-Origin': "*"}
+    let params = {player_id: this.state.player.id, puzzle_id: this.state.selectedPuzzleId+1}
+    axios.post('https://e7223ff9.ngrok.io/scores.json',{headers: headers, player_id: this.state.player.id, puzzle_id: this.state.selectedPuzzleId+1})
+    	.then(response => {
+    		console.log(response.data)
+    		this.setState({currentScoreId: response.data.id})
+    	})
+    	.catch(error => {
+    		console.log(error)
+    	})
+  }
+
+  updateFinishTimeHandler = () => {
+  	axios.patch('https://e7223ff9.ngrok.io/scores.json',{ player_id: this.state.player.id, puzzle_id: this.state.selectedPuzzleId+1})
+    	.then(response => {
+    		console.log(response.data)
+    		
+    	})
+    	.catch(error => {
+    		console.log(error)
+    	})
+  	
   }
 
   newGameHandler = ()=> {
@@ -182,7 +212,7 @@ class PuzzleList extends Component {
 		let divFoundCharacters = null;
 		let endGameModal = null;
 		let enterName = null;
-		if( this.state.playerName === 'a') {
+		if( this.state.player.name === '') {
 		  	return enterName = <EnterName clicked={this.enterNameHandler} />
 		  	
 		  }
