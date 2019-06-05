@@ -5,8 +5,8 @@ import axios from 'axios'
 class endGameModal extends Component {
 	state= {
 		scoresData: [
-			{id:1, name:'Agon',time:'123'},
-			{id:1, name:'Vigan',time:'32'}
+			{id:1, name:'Fake1',time:'123'},
+			{id:2, name:'Fake2',time:'32'}
 		],
 		displayLoading: true
 	}
@@ -15,9 +15,12 @@ class endGameModal extends Component {
 		let params = {puzzle_id: this.props.puzzleId}
     axios.get('https://e7223ff9.ngrok.io/scores.json', {params})
 		.then(response => {
-		  console.log(response.data)
-		  //update scoresData
-			this.setState({displayLoading: false})
+		  
+		  let newScoresData = [...this.state.scoresData]
+		  let topTenScores = response.data.map(score => {
+		  	return {id: score.id, name: score.name, time: score.time.toFixed(2)}
+		  })
+			this.setState({scoresData: topTenScores, displayLoading: false})
 		})
 		.catch(error => {
 			console.log(error)

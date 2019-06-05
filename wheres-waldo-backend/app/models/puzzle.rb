@@ -1,6 +1,7 @@
 class Puzzle < ApplicationRecord
   has_many :characters, dependent: :destroy
   has_many :scores
+  has_many :players, through: :scores
   #scope :with_character_data
 
   def self.with_character_data

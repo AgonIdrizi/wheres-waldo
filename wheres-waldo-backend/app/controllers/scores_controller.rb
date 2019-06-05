@@ -1,7 +1,7 @@
 class ScoresController < ApplicationController
   skip_before_action :verify_authenticity_token
   def index
-  	@scores = Puzzle.find(params[:puzzle_id]).scores.where('time not ?', nil).order(time: :asc).limit(10)
+  	@scores = Score.top_ten_scores(params[:puzzle_id])
   	respond_to do |format|
   	  format.json {render json: @scores}
   	end
