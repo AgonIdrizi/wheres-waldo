@@ -274,7 +274,7 @@ class PuzzleList extends Component {
 
 		  
 		  if(this.state.gameOver) {
-		  	endGameModal = <EndGameModal />
+		  	endGameModal = <EndGameModal puzzleId={this.state.selectedPuzzleId+1} />
 		  	selectedPuzzleAndCharacters=null
 		  	divFoundCharacters=null
 		  }
