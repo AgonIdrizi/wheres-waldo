@@ -181,7 +181,7 @@ class PuzzleList extends Component {
   }
 
   updateFinishTimeHandler = () => {
-  	axios.patch('https://e7223ff9.ngrok.io/scores.json',{ player_id: this.state.player.id, puzzle_id: this.state.selectedPuzzleId+1})
+  	axios.patch('https://e7223ff9.ngrok.io/scores.json',{ id: this.state.currentScoreId})
     	.then(response => {
     		console.log(response.data)
     		
