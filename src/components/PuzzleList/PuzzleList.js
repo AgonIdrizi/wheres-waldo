@@ -70,8 +70,8 @@ class PuzzleList extends Component {
   
 
   componentDidMount () {
-  	let headers = {'Access-Control-Allow-Origin': "*"}
-		axios.get('https://e7223ff9.ngrok.io/puzzles.json', {headers: headers})
+  	
+		axios.get('https://e7223ff9.ngrok.io/puzzles.json', {})
 		.then(response => {
 			let puzzles = [...this.state.puzzles]
 			
@@ -113,9 +113,8 @@ class PuzzleList extends Component {
   	//if (all characters  gameScore are found){
   	//	update gameOver state
 
-  	let headers = {'Access-Control-Allow-Origin': "*"}
   	let params = {x: this.state.divMenu.x, y:this.state.divMenu.y , name: name}
-		axios.get('https://e7223ff9.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', {headers: headers, params: params})
+		axios.get('https://e7223ff9.ngrok.io/puzzle-character-locations/'+ (this.state.selectedPuzzleId + 1)+'.json', { params: params})
 		.then(response => {
 			//console.log(this.state.selectedPuzzleId)
 			if (response.data.status == 'OK'){
@@ -181,7 +180,11 @@ class PuzzleList extends Component {
   }
 
   updateFinishTimeHandler = () => {
-  	axios.patch('https://e7223ff9.ngrok.io/scores.json',{ id: this.state.currentScoreId})
+  	const proxyurl = "https://cors-anywhere.herokuapp.com/";
+  	let headers = {'Access-Control-Allow-Origin': "*"}
+  	axios.patch(proxyurl+'https://e7223ff9.ngrok.io/scores/'+this.state.currentScoreId+'.json'
+  		
+  	)
     	.then(response => {
     		console.log(response.data)
     		
@@ -190,6 +193,18 @@ class PuzzleList extends Component {
     		console.log(error)
     	})
   	
+  }
+
+  displayAllScoresHandler = () => {
+  	let params = {puzzle_id: this.state.selectedPuzzleId+1}
+    axios.get('https://e7223ff9.ngrok.io/scores.json', {params})
+		.then(response => {
+		  console.log(response.data)
+			
+		})
+		.catch(error => {
+			console.log(error)
+		});
   }
 
   newGameHandler = ()=> {

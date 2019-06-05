@@ -1,7 +1,7 @@
 class ScoresController < ApplicationController
   skip_before_action :verify_authenticity_token
   def index
-  	@scores = Puzzle.find(1).scores.where('time not ?', nil).order(time: :asc).limit(10)
+  	@scores = Puzzle.find(params[:puzzle_id]).scores.where('time not ?', nil).order(time: :asc).limit(10)
   end
 
   def create
@@ -16,6 +16,11 @@ class ScoresController < ApplicationController
 
   def update
   	@score = Score.find(params[:id])
-  	@score.update_done_time
+  	
+  	if @score.update_done_time
+  	  respond_to do |format|
+  	    format.json { render json: @score.to_json}
+  	  end
+  	end
   end
 end
